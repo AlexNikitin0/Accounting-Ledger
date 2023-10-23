@@ -60,4 +60,8 @@ public class Account {
         this.amount = amount;
     }
 
+    @Override
+    public String toString() {
+        return this.today + "|" + this.currentTime + "|" + this.description + "|" + this.vendor + "|" + this.amount;
+    }
 }

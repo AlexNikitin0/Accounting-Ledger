@@ -89,7 +89,7 @@ public class AccountingLedger {
             bufferedWriter.close();
         }
         else if(choice.equalsIgnoreCase("L")){// if user selects Ledger
-
+                displayLedger();
 
         }
 //        for (Account  trans : transaction.values()) {
@@ -101,12 +101,45 @@ public class AccountingLedger {
 
     }//end displayMenu()
 
-    public static void displayLedger(){
+    public static void displayLedger() throws IOException{
+        //declare local vars
+        String choice = "";
+        String description;
+        String vendor;
+        double amount = 0.0;
+        //make file reader and writers
+
+        FileWriter fileWriter = new FileWriter("src/main/resources/transactions.csv", true);
+        FileReader fileReader = new FileReader("src/main/resources/transactions.csv");
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        //write first line(header) to file
+        String input;
+        while((input = bufferedReader.readLine()) == null){// if text file is empty, write this
+            bufferedWriter.write("date|time|description|vendor|amount\n");
+
+        }
+
+
         //display output ask for user input
         System.out.println("A) All ");
         System.out.println("D) Deposits ");
         System.out.println("P) Payments ");
         System.out.println("R) Reports ");//call displayReports() if selected
+        choice = keyboard.nextLine().trim();
+        //method decision structure
+        if(choice.equalsIgnoreCase("A")){// if user selects All display all entries newest to oldest.
+            //display all statements
+            for( Account a : transaction.values()){
+
+
+                System.out.println(a);
+
+
+            }//end for each
+            System.out.println(choice);
+        }
+
     }
 
     public static void displayReports(){
