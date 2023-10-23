@@ -1,29 +1,36 @@
 package com.pluralsight;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
+import java.util.Date;
 public class Account {
-    private String date;
-    private String time;
+
+
     private String description;
     private String vendor;
     private double amount;
 
+    //local time / local date format setup
+   private LocalDate today = LocalDate.now();
+   private LocalTime currentTime = LocalTime.now();
+   private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     //constructor
-
-    public Account(String date,String time,String description,String vendor,double amount){
-        this.date = date;
-        this.time = time;
+    //no need to pass in time or date as localdate.now() is called within constructor to initalize field(s)
+    public Account(String description,String vendor,double amount){
+        this.today = LocalDate.now();
+        this.currentTime = LocalTime.now();
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
     }
 
     //getters
-    public String getDate(){
-        return this.date;
+    public LocalDate getDate(){
+        return this.today;
     }
     public String getTime(){
-        return this.time;
+        return currentTime.format(fmt);
     }
     public String getDescription(){
         return this.description;
@@ -37,11 +44,11 @@ public class Account {
 
     //setters
 
-    public void setDate(String date){
-        this.date = date;
+    public void setDate(LocalDate date){
+        this.today = date;
     }
-    public void setTime(String time){
-        this.time = time;
+    public void setTime(LocalTime time){
+        this.currentTime = time;
     }
     public void setDescription(String description){
         this.description = description;
