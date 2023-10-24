@@ -1,4 +1,5 @@
 package com.pluralsight;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -19,10 +20,8 @@ public class AccountingLedger {
     //initialize account hashMap globally for easy method access
     public static HashMap<String, Account> transaction = new HashMap<String, Account>();
 
-    public static void main(String[] args) throws IOException {//call methods in main
-
-
-        displayMenu();
+    public static void main(String[] args) throws IOException {
+        displayMenu();//entry point for method chain
 
     }//end main
 
@@ -33,7 +32,6 @@ public class AccountingLedger {
         String vendor;
         double amount = 0.0;
         //make file reader and writers
-
         FileWriter fileWriter = new FileWriter("src/main/resources/transactions.csv", true);
         FileReader fileReader = new FileReader("src/main/resources/transactions.csv");
         BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -45,20 +43,21 @@ public class AccountingLedger {
 
         }
 
-
         //display output ask for user input
+        System.out.println();
         System.out.println("D) Add Deposit ");
         System.out.println("P) Make Payment (Debit) ");
         System.out.println("L) Ledger ");//call displayLedger() if selected
         System.out.println("X) Exit ");
+        System.out.println();
         choice = keyboard.nextLine().trim();
         //menu decision structure
         if (choice.equalsIgnoreCase("D")) {//if user chooses deposit
-            System.out.println("Please enter Invoice Name/Description:  ");
+            System.out.print("Please enter Invoice Name/Description:  ");
             description = keyboard.nextLine();
-            System.out.println("Please enter the vendor: ");
+            System.out.print("Please enter the vendor: ");
             vendor = keyboard.nextLine();
-            System.out.println("Please enter the amount: ");
+            System.out.print("Please enter the amount: ");
             amount = keyboard.nextDouble();
             //add info to Account Object
             Account acc = new Account(description, vendor, amount);
@@ -67,32 +66,38 @@ public class AccountingLedger {
             //write to file from object
             bufferedWriter.write(acc.getDate() + "|" + acc.getTime() + "|" + acc.getDescription() + "|" + acc.getVendor() + "|" + acc.getAmount() + "\n");
             bufferedWriter.close();
+            keyboard.nextLine();
+            System.out.println("Deposit added to csv file!");
+            System.out.println();
+            //recursion back to start
+            displayMenu();
 
         } else if (choice.equalsIgnoreCase("P")) {//if user chooses Make a payment
-            System.out.println("Please enter Product Name/Description:  ");
+            System.out.print("Please enter Product Name/Description:  ");
             description = keyboard.nextLine();
-            System.out.println("Please enter the vendor: ");
+            System.out.print("Please enter the vendor: ");
             vendor = keyboard.nextLine();
-            System.out.println("Please enter the amount: ");
+            System.out.print("Please enter the amount: ");
             amount = keyboard.nextDouble();
             amount *= -1;
+            keyboard.nextLine();
             //add info to Account Object
             Account acc = new Account(description, vendor, amount);
             //add info to HashMap
-            transaction.put(description,acc);
+            transaction.put(description, acc);
             //write to file from object
             bufferedWriter.write(acc.getDate() + "|" + acc.getTime() + "|" + acc.getDescription() + "|" + acc.getVendor() + "|" + acc.getAmount() + "\n");
             bufferedWriter.close();
+            System.out.println("Payment added to csv file!");
+            System.out.println();
+            //recursion back to start
+            displayMenu();
         } else if (choice.equalsIgnoreCase("L")) {// if user selects Ledger
             displayLedger();
 
+        } else if (choice.equalsIgnoreCase("x")) {
+            System.exit(0);
         }
-//        for (Account  trans : transaction.values()) {
-//            System.out.printf(,
-//                    trans.getDate(), trans.getTime(), trans.getDescription(), trans.getVendor(), trans.getAmount());
-//        }
-
-
     }//end displayMenu()
 
     public static void displayLedger() throws IOException {
@@ -116,82 +121,184 @@ public class AccountingLedger {
                 String amountS = line[4];
                 double amountString = Double.parseDouble(amountS);
                 //add each thing into hashmap of statements using text file dates/times
-                transaction.put(descriptionS, new Account(LocalDate.parse(date),LocalTime.parse(time),descriptionS, vendorS, amountString));
+                transaction.put(descriptionS, new Account(LocalDate.parse(date), LocalTime.parse(time), descriptionS, vendorS, amountString));
             }
         }
-            //display output ask for user input
-            System.out.println("A) All ");
-            System.out.println("D) Deposits ");
-            System.out.println("P) Payments ");
-            System.out.println("R) Reports ");//call displayReports() if selected
-            choice = keyboard.nextLine().trim();
-            //method decision structure
-            if (choice.equalsIgnoreCase("A")) {// if user selects All display all entries newest to oldest.
-                //display all statements
-                // Display all ledger entries here
-                for (Account transaction : transaction.values()) {
+        //display output ask for user input
+        System.out.println("A) All ");
+        System.out.println("D) Deposits ");
+        System.out.println("P) Payments ");
+        System.out.println("R) Reports ");//call displayReports() if selected
+        System.out.println();
+        choice = keyboard.nextLine().trim();
+        //method decision structure
+        if (choice.equalsIgnoreCase("A")) {// if user selects All display all entries newest to oldest.
+            //display all statements
+            // Display all ledger entries here
+            for (Account transaction : transaction.values()) {
+                System.out.println(transaction.toString());
+            }
+            displayMenu();
+        } else if (choice.equalsIgnoreCase("D")) {//if user selects deposits display deposits
+            //for each loop that checks if price > 0 then print those.
+            for (Account transaction : transaction.values()) {
+                if (transaction.getAmount() > 0) {
                     System.out.println(transaction.toString());
                 }
             }
-            else if(choice.equalsIgnoreCase("D")){//if user selects deposits display deposits
-                //for each loop that checks if price > 0 then print those.
-                for(Account transaction: transaction.values()){
-                    if (transaction.getAmount() > 0){
-                        System.out.println(transaction.toString());
-                    }
+            displayMenu();
+        } else if (choice.equalsIgnoreCase("P")) {
+            //for each loop that checks if price < 0 then print those
+            for (Account transaction : transaction.values()) {
+                if (transaction.getAmount() < 0) {
+                    System.out.println(transaction.toString());
                 }
             }
-            else if(choice.equalsIgnoreCase("P")){
-                //for each loop that checks if price < 0 then print those
-                for(Account transaction: transaction.values()){
-                    if (transaction.getAmount() < 0){
-                        System.out.println(transaction.toString());
-                    }
-                }
-
-            }
-            else if(choice.equalsIgnoreCase("R")){
-                displayReports();
-            }
+            displayMenu();
+        } else if (choice.equalsIgnoreCase("R")) {
+            displayReports();
+        }
 
     }//end displayLedger()
-        public static void displayReports() throws IOException {
+
+    public static void displayReports() throws IOException {
         //read file again
-            FileReader fileReader = new FileReader("src/main/resources/transactions.csv");
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String input;
-            while ((input = bufferedReader.readLine()) != null) {//while reader has next line, split to array of strings at "|"
-                String[] line = input.split("\\|");
-                //split line further into just the date at index[0]
-                String[] dates = line[0].split("\\-");
+        FileReader fileReader = new FileReader("src/main/resources/transactions.csv");
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        String input;
+        while ((input = bufferedReader.readLine()) != null) {//while reader has next line, split to array of strings at "|"
+            String[] line = input.split("\\|");
+            //split line further into just the date at index[0]
+            String[] dates = line[0].split("\\-");
 
 
-            }//end while
-            //declare local vars
-            int choice;
-            LocalDate date = LocalDate.now();
-            Month currentMonth = date.getMonth();
-            //display output ask for user input
-            System.out.println("1) Month To Date ");
-            System.out.println("2) Previous Month ");
-            System.out.println("3) Year To Date ");
-            System.out.println("4) Previous Year ");
-            System.out.println("5) Search by Vendor ");
-            choice = keyboard.nextInt();
-            //method decision structure
-            if(choice==1){// user selects month to date display transactions in current month
-                for(Account transaction: transaction.values()){
-                    if (transaction.getDate().getMonth() == currentMonth){
-                        System.out.println(transaction.toString());
-                    }
+        }//end while
+        //declare local vars
+        int back;
+        int choice;
+        String goBack;
+        LocalDate date = LocalDate.now();
+        Month currentMonth = date.getMonth();//gets current month
+        Month lastMonth = currentMonth.minus(1);
+        Year currentYear = Year.from(date);//gets current year
+        Year previousYear = currentYear.minus(Period.ofYears(1));
+        String userVendorSearch;
+        boolean tOrF = false;
+        //display output ask for user input
+        System.out.println("1) Month To Date ");
+        System.out.println("2) Previous Month ");
+        System.out.println("3) Year To Date ");
+        System.out.println("4) Previous Year ");
+        System.out.println("5) Search by Vendor ");
+        System.out.println();
+        choice = keyboard.nextInt();
+        keyboard.nextLine();
+        //method decision structure
+        if (choice == 1) {// user selects month to date display transactions in current month
+            for (Account transaction : transaction.values()) {
+                if (transaction.getDate().getMonth() == currentMonth) {//prints statements that match the current month
+                    System.out.println(transaction.toString());
                 }
-
             }
-            System.out.println("H) Go back to home page ");
+            //direct user back to reports or back home
+            System.out.println("6) Back to Report page ");
+            System.out.println("0) Back to Home page ");
+            back = keyboard.nextInt();
+            if (back == 6) {
+                displayReports();
+            } else if (back == 0) {
+                keyboard.nextLine();
+                displayMenu();
+            }
 
-        }//end displayReports()
+        } else if (choice == 2) {//user selects previous month, display transactions in previous month
+            for (Account transaction : transaction.values()) {
+                if (transaction.getDate().getMonth() == lastMonth) {
+                    System.out.println(transaction.toString());
+                }//rend inner if
+            }//end for
+            //direct user back to reports or back home
+            System.out.println("6) Back to Report page ");
+            System.out.println("0) Back to Home page ");
+            System.out.println();
+            back = keyboard.nextInt();
+            if (back == 6) {
+                displayReports();
+            } else if (back == 0) {
+                keyboard.nextLine();
+                displayMenu();
+            }
+        }//end else if
+        else if (choice == 3) {//user selects year to date display all transactions in current year.
+            for (Account transaction : transaction.values()) {
+                LocalDate transactionDate = transaction.getDate();
+                Year transactionYear = Year.from(transactionDate);
+                if (transactionYear.equals(currentYear)) {
+                    System.out.println(transaction.toString());
+                }//end inner if
+            }//end for
+            //direct user back to reports or back home
+            System.out.println("6) Back to Report page ");
+            System.out.println("0) Back to Home page ");
+            System.out.println();
+            back = keyboard.nextInt();
+            if (back == 6) {
+                displayReports();
+            } else if (back == 0) {
+                keyboard.nextLine();
+                displayMenu();
+            }
+        } else if (choice == 4) {//user selects previous year display all transactions in previous year.
+            for (Account transaction : transaction.values()) {
+                LocalDate transactionDate = transaction.getDate();
+                Year transactionYear = Year.from(transactionDate);
+                if (transactionYear.equals(previousYear)) {
+                    System.out.println(transaction.toString());
+                }//end inner if
+            }//end for
+            //direct user back to reports or back home
+            System.out.println("6) Back to Report page ");
+            System.out.println("0) Back to Home page ");
+            System.out.println();
+            back = keyboard.nextInt();
+            if (back == 6) {
+                displayReports();
+            } else if (back == 0) {
+                keyboard.nextLine();
+                displayMenu();
+            }
+        } else if (choice == 5) {// searches csv by "vendor" and displays transactions including that vendor.
+            System.out.print("Enter the vendor you wish to search by: ");
+            userVendorSearch = keyboard.nextLine().trim();
+            System.out.println();
+            //iterate through transaction hash
+            for (Account transaction : transaction.values()) {
+                String transactionVendor = transaction.getVendor();
+                if (transactionVendor.equalsIgnoreCase(userVendorSearch)) {
+                    System.out.println(transaction.toString());
+                    tOrF = true;
+                }
+            }//end for
+            if (!tOrF) {// if bool is false that means there was no matching vendor
+                System.out.println("Vendor not found ");
+                System.out.println();
+                displayLedger();
+            }
 
-    }//end class
+            //direct user back to reports or back home
+            System.out.println("6) Back to Report page ");
+            System.out.println("0) Back to Home page ");
+            System.out.println();
+            back = keyboard.nextInt();
+            if (back == 6) {
+                displayReports();
+            } else if (back == 0) {
+                keyboard.nextLine();
+                displayMenu();
+            }
+        }
+    }//end displayReports()
+}//end class
 
 
 
