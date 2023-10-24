@@ -13,17 +13,29 @@ public class Account {
     //local time / local date format setup
    private LocalDate today = LocalDate.now();
    private LocalTime currentTime = LocalTime.now();
-   private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss");
+   private String workingTime = currentTime.now().format(fmt);
 
-    //constructor
+
+    //constructor(s)
     //no need to pass in time or date as localdate.now() is called within constructor to initalize field(s)
-    public Account(String description,String vendor,double amount){
+
+    public Account(String description,String vendor,double amount){   //system time constructor
         this.today = LocalDate.now();
-        this.currentTime = LocalTime.now();
+        this.currentTime =  LocalTime.parse(workingTime);
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
     }
+
+    public Account(LocalDate date, LocalTime time, String description,String vendor,double amount){   //grabs time from file passed in as argument
+        this.today = date;
+        this.currentTime =  time;
+        this.description = description;
+        this.vendor = vendor;
+        this.amount = amount;
+    }
+
 
     //getters
     public LocalDate getDate(){
