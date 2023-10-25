@@ -1,8 +1,10 @@
 package com.pluralsight;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 import java.util.Date;
+
 public class Account {
 
 
@@ -11,26 +13,26 @@ public class Account {
     private double amount;
 
     //local time / local date format setup
-   private LocalDate today = LocalDate.now();
-   private LocalTime currentTime = LocalTime.now();
+    private LocalDate today = LocalDate.now();
+    private LocalTime currentTime = LocalTime.now();
     private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss");
-   private String workingTime = currentTime.now().format(fmt);
+    private String workingTime = currentTime.now().format(fmt);
 
 
     //constructor(s)
     //no need to pass in time or date as localdate.now() is called within constructor to initalize field(s)
 
-    public Account(String description,String vendor,double amount){   //system time constructor
+    public Account(String description, String vendor, double amount) {   //system time constructor
         this.today = LocalDate.now();
-        this.currentTime =  LocalTime.parse(workingTime);
+        this.currentTime = LocalTime.parse(workingTime);
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
     }
 
-    public Account(LocalDate date, LocalTime time, String description,String vendor,double amount){   //grabs time from file passed in as argument
+    public Account(LocalDate date, LocalTime time, String description, String vendor, double amount) {   //grabs time from file passed in as argument
         this.today = date;
-        this.currentTime =  time;
+        this.currentTime = time;
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
@@ -38,37 +40,45 @@ public class Account {
 
 
     //getters
-    public LocalDate getDate(){
+    public LocalDate getDate() {
         return this.today;
     }
-    public String getTime(){
+
+    public String getTime() {
         return currentTime.format(fmt);
     }
-    public String getDescription(){
+
+    public String getDescription() {
         return this.description;
     }
-    public String getVendor(){
+
+    public String getVendor() {
         return this.vendor;
     }
-    public double getAmount(){
+
+    public double getAmount() {
         return this.amount;
     }
 
     //setters
 
-    public void setDate(LocalDate date){
+    public void setDate(LocalDate date) {
         this.today = date;
     }
-    public void setTime(LocalTime time){
+
+    public void setTime(LocalTime time) {
         this.currentTime = time;
     }
-    public void setDescription(String description){
+
+    public void setDescription(String description) {
         this.description = description;
     }
-    public void setVendor(String vendor){
+
+    public void setVendor(String vendor) {
         this.vendor = vendor;
     }
-    public void setAmount(double amount){
+
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

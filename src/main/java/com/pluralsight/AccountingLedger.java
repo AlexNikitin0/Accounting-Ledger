@@ -1,25 +1,18 @@
 package com.pluralsight;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.*;
-import java.util.Date;
 
 public class AccountingLedger {
     //create some variables to be used globally
-
-
-//end static
-
-
     public static Scanner keyboard = new Scanner(System.in);//global scanner for use across methods
     //initialize account hashMap globally for easy method access
     public static HashMap<String, Account> transaction = new HashMap<String, Account>();
-
+    //initialize arayList of accounts to use in sorting across methods
+    public static ArrayList<Account> accountArrayList = new ArrayList<>(transaction.values());
     public static void main(String[] args) throws IOException {
         displayMenu();//entry point for method chain
 
@@ -27,6 +20,7 @@ public class AccountingLedger {
 
     public static void displayMenu() throws IOException { //add deposit,make a payment, display the ledger,exit
         //declare local variables
+        //create arrayList to use in sorting
         String choice;
         String description;
         String vendor;
@@ -38,7 +32,7 @@ public class AccountingLedger {
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         //write first line(header) to file
         String input;
-        while ((input = bufferedReader.readLine()) == null) {
+        while ((input = bufferedReader.readLine()) == null) {//if reader reads empty, write that first line
             bufferedWriter.write("date|time|description|vendor|amount\n");
 
         }
@@ -79,7 +73,7 @@ public class AccountingLedger {
             vendor = keyboard.nextLine();
             System.out.print("Please enter the amount: ");
             amount = keyboard.nextDouble();
-            amount *= -1;
+            amount *= -1;//make amount negative
             keyboard.nextLine();
             //add info to Account Object
             Account acc = new Account(description, vendor, amount);
@@ -101,7 +95,10 @@ public class AccountingLedger {
     }//end displayMenu()
 
     public static void displayLedger() throws IOException {
-        //declare local vars
+        //declare local vars //compare
+        //sort list in descending order based of the date
+
+
         String choice = "";
         String description;
         String vendor;
@@ -121,7 +118,9 @@ public class AccountingLedger {
                 String amountS = line[4];
                 double amountString = Double.parseDouble(amountS);
                 //add each thing into hashmap of statements using text file dates/times
-                transaction.put(descriptionS, new Account(LocalDate.parse(date), LocalTime.parse(time), descriptionS, vendorS, amountString));
+                transaction.put(descriptionS, new Account(LocalDate.parse(date), LocalTime.parse(time), descriptionS, vendorS, amountString));//using second constructor here
+                accountArrayList = new ArrayList<>(transaction.values()); // add values from hash into arraylist
+                Collections.sort(accountArrayList,(v1,v2)->v2.getDate().compareTo(v1.getDate()));//sort ArrayList in descending order by comparing the dates of each transaction
             }
         }
         //display output ask for user input
@@ -135,42 +134,39 @@ public class AccountingLedger {
         if (choice.equalsIgnoreCase("A")) {// if user selects All display all entries newest to oldest.
             //display all statements
             // Display all ledger entries here
-            for (Account transaction : transaction.values()) {
+            for (Account transaction : accountArrayList) {//loop through each transaction in arrayList. print all
                 System.out.println(transaction.toString());
             }
-            displayMenu();
+            displayMenu();//display menu again
         } else if (choice.equalsIgnoreCase("D")) {//if user selects deposits display deposits
             //for each loop that checks if price > 0 then print those.
-            for (Account transaction : transaction.values()) {
+            for (Account transaction : accountArrayList) {
                 if (transaction.getAmount() > 0) {
-                    System.out.println(transaction.toString());
+                    System.out.println(transaction.toString());//print all positive transactions
                 }
             }
-            displayMenu();
+            displayMenu();//display menu again
         } else if (choice.equalsIgnoreCase("P")) {
             //for each loop that checks if price < 0 then print those
-            for (Account transaction : transaction.values()) {
+            for (Account transaction : accountArrayList) {
                 if (transaction.getAmount() < 0) {
                     System.out.println(transaction.toString());
                 }
             }
-            displayMenu();
+            displayMenu();//display menu again
         } else if (choice.equalsIgnoreCase("R")) {
-            displayReports();
+            displayReports(); //calls reports method
         }
 
     }//end displayLedger()
 
-    public static void displayReports() throws IOException {
+    public static void displayReports() throws IOException { // method displays report menu and runs all functions depending on user choice
         //read file again
         FileReader fileReader = new FileReader("src/main/resources/transactions.csv");
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String input;
         while ((input = bufferedReader.readLine()) != null) {//while reader has next line, split to array of strings at "|"
             String[] line = input.split("\\|");
-            //split line further into just the date at index[0]
-            String[] dates = line[0].split("\\-");
-
 
         }//end while
         //declare local vars
@@ -184,6 +180,7 @@ public class AccountingLedger {
         Year previousYear = currentYear.minus(Period.ofYears(1));
         String userVendorSearch;
         boolean tOrF = false;
+
         //display output ask for user input
         System.out.println("1) Month To Date ");
         System.out.println("2) Previous Month ");
@@ -193,11 +190,14 @@ public class AccountingLedger {
         System.out.println();
         choice = keyboard.nextInt();
         keyboard.nextLine();
+        accountArrayList = new ArrayList<>(transaction.values()); // add values from hash into arraylist for sorting output
+        Collections.sort(accountArrayList,(v1,v2)->v2.getDate().compareTo(v1.getDate()));//sort ArrayList in descending order by comparing the dates of each transaction
         //method decision structure
         if (choice == 1) {// user selects month to date display transactions in current month
-            for (Account transaction : transaction.values()) {
+            for (Account transaction : accountArrayList) {
                 if (transaction.getDate().getMonth() == currentMonth) {//prints statements that match the current month
                     System.out.println(transaction.toString());
+
                 }
             }
             //direct user back to reports or back home
@@ -212,11 +212,11 @@ public class AccountingLedger {
             }
 
         } else if (choice == 2) {//user selects previous month, display transactions in previous month
-            for (Account transaction : transaction.values()) {
+            for (Account transaction : accountArrayList) {
                 if (transaction.getDate().getMonth() == lastMonth) {
                     System.out.println(transaction.toString());
-                }//rend inner if
-            }//end for
+                }
+            }
             //direct user back to reports or back home
             System.out.println("6) Back to Report page ");
             System.out.println("0) Back to Home page ");
@@ -230,7 +230,7 @@ public class AccountingLedger {
             }
         }//end else if
         else if (choice == 3) {//user selects year to date display all transactions in current year.
-            for (Account transaction : transaction.values()) {
+            for (Account transaction : accountArrayList) {
                 LocalDate transactionDate = transaction.getDate();
                 Year transactionYear = Year.from(transactionDate);
                 if (transactionYear.equals(currentYear)) {
@@ -249,7 +249,7 @@ public class AccountingLedger {
                 displayMenu();
             }
         } else if (choice == 4) {//user selects previous year display all transactions in previous year.
-            for (Account transaction : transaction.values()) {
+            for (Account transaction : accountArrayList) {
                 LocalDate transactionDate = transaction.getDate();
                 Year transactionYear = Year.from(transactionDate);
                 if (transactionYear.equals(previousYear)) {
@@ -271,18 +271,18 @@ public class AccountingLedger {
             System.out.print("Enter the vendor you wish to search by: ");
             userVendorSearch = keyboard.nextLine().trim();
             System.out.println();
-            //iterate through transaction hash
-            for (Account transaction : transaction.values()) {
-                String transactionVendor = transaction.getVendor();
-                if (transactionVendor.equalsIgnoreCase(userVendorSearch)) {
-                    System.out.println(transaction.toString());
-                    tOrF = true;
+            //iterate through transaction list
+            for (Account transaction : accountArrayList) {
+                String transactionVendor = transaction.getVendor();//save vendor in hashmap as string
+                if (transactionVendor.equalsIgnoreCase(userVendorSearch)) {//compare vendor to user typed vendor.
+                    System.out.println(transaction.toString());//print matching
+                    tOrF = true;//set bool as true if match found
                 }
             }//end for
             if (!tOrF) {// if bool is false that means there was no matching vendor
                 System.out.println("Vendor not found ");
                 System.out.println();
-                displayLedger();
+                displayLedger();//default to ledger screen
             }
 
             //direct user back to reports or back home
