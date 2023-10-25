@@ -13,6 +13,7 @@ public class AccountingLedger {
     public static HashMap<String, Account> transaction = new HashMap<String, Account>();
     //initialize arayList of accounts to use in sorting across methods
     public static ArrayList<Account> accountArrayList = new ArrayList<>(transaction.values());
+
     public static void main(String[] args) throws IOException {
         displayMenu();//entry point for method chain
 
@@ -120,7 +121,7 @@ public class AccountingLedger {
                 //add each thing into hashmap of statements using text file dates/times
                 transaction.put(descriptionS, new Account(LocalDate.parse(date), LocalTime.parse(time), descriptionS, vendorS, amountString));//using second constructor here
                 accountArrayList = new ArrayList<>(transaction.values()); // add values from hash into arraylist
-                Collections.sort(accountArrayList,(v1,v2)->v2.getDate().compareTo(v1.getDate()));//sort ArrayList in descending order by comparing the dates of each transaction
+                Collections.sort(accountArrayList, (l1, l2) -> l2.getDate().compareTo(l1.getDate()));//sort ArrayList in descending order by comparing the dates of each transaction
             }
         }
         //display output ask for user input
@@ -191,7 +192,8 @@ public class AccountingLedger {
         choice = keyboard.nextInt();
         keyboard.nextLine();
         accountArrayList = new ArrayList<>(transaction.values()); // add values from hash into arraylist for sorting output
-        Collections.sort(accountArrayList,(v1,v2)->v2.getDate().compareTo(v1.getDate()));//sort ArrayList in descending order by comparing the dates of each transaction
+        //lambda anonymous function that accepts two comparator and returns which is greater until there are no more transactions to compare
+        Collections.sort(accountArrayList, (l1, l2) -> l2.getDate().compareTo(l1.getDate()));//sort ArrayList in descending order by comparing the dates of each transaction
         //method decision structure
         if (choice == 1) {// user selects month to date display transactions in current month
             for (Account transaction : accountArrayList) {
