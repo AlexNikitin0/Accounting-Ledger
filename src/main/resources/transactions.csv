@@ -1,6 +1,6 @@
 date|time|description|vendor|amount
 2023-10-23|14:21:01|check|kmart|99.25
-2023-10-23|14:37:17|Cajun Chicken|bojangles|15.25
+2023-10-23|14:37:17|Cajun Chicken|bojangles|-15.25
 2023-10-23|14:39:30|chicken tenders|burger king|-10.24
 2023-10-24|09:01:11|Workers Comp|State of North Carolina|244.0
 2023-10-24|09:07:37|deposit|cashapp|200.0
@@ -16,3 +16,6 @@ date|time|description|vendor|amount
 2023-10-25|10:43:27|Lottery Winnings|Shell Gas Station|4500.28
 2023-01-30|02:10:44|Printer|Target|-267.44
 2023-02-11|02:10:44|Watermelon|Target|-4.50
+2023-10-26|10:44:56|Spoon|Target|2.0
+2023-10-26|10:46:22|Pay|Dollar Tree|400.0
+2023-10-26|10:47:15|fork|kmart|-1.5

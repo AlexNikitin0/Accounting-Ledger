@@ -3,7 +3,6 @@ package com.pluralsight;
 import java.util.*;
 import java.io.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.*;
 
 public class AccountingLedger {
@@ -11,7 +10,7 @@ public class AccountingLedger {
     public static Scanner keyboard = new Scanner(System.in);//global scanner for use across methods
     //initialize account hashMap globally for easy method access
     public static HashMap<String, Account> transaction = new HashMap<String, Account>();
-    //initialize arayList of accounts to use in sorting across methods
+    //initialize arrayList of accounts to use in sorting across methods
     public static ArrayList<Account> accountArrayList = new ArrayList<>(transaction.values());
 
     public static void main(String[] args) throws IOException {
@@ -300,6 +299,42 @@ public class AccountingLedger {
             }
         }
     }//end displayReports()
+
+    public static void customSearch() throws IOException {
+        //declare local variables
+        String startDate;
+        LocalDate startDateAsDate;
+        String endDate;
+        LocalDate endDateAsDate;
+        String description;
+        String vendor;
+        double amount;
+        //read file
+        FileReader fileReader = new FileReader("src/main/resources/transactions.csv");
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        String input;
+        while ((input = bufferedReader.readLine()) != null) {//while reader has next line, split to array of strings at "|"
+            String[] line = input.split("\\|");
+        }//end while
+        //get user input
+        System.out.print("Start Date(YYY-MM-DD): ");
+        startDate = keyboard.nextLine();
+        startDateAsDate = LocalDate.parse(startDate);
+        System.out.print("End Date(YYY-MM-DD): ");
+        endDate = keyboard.nextLine();
+        endDateAsDate = LocalDate.parse(endDate);
+        System.out.print("Description: ");
+        description = keyboard.nextLine();
+        System.out.print("Vendor: ");
+        vendor = keyboard.nextLine();
+        System.out.print("Amount: ");
+        amount = keyboard.nextDouble();
+        //decision structure
+
+
+        
+    }//end customSearch()
+
 }//end class
 
 
